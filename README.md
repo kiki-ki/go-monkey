@@ -1,2 +1,2 @@
-# go-interpreter
-”Go言語でつくるインタプリタ”より
+# go-monkey
+”Go言語でつくるインタプリタ”より。
