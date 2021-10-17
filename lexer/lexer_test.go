@@ -3,10 +3,11 @@ package lexer_test
 import (
 	"testing"
 
-	"github.com/kiki-ki/go-interpreter/token"
+	"github.com/kiki-ki/go-monkey/lexer"
+	"github.com/kiki-ki/go-monkey/token"
 )
 
-func TextNextToken(t *testing.T) {
+func TestNextToken(t *testing.T) {
 	in := `=+(){},;`
 
 	cases := []struct {
@@ -24,15 +25,15 @@ func TextNextToken(t *testing.T) {
 		{token.EOF, ""},
 	}
 
-	l := New(in)
+	l := lexer.New(in)
 
 	for i, tt := range cases {
-		token := l.NextToken()
-		if token.Type != tt.wantType {
-			t.Fatalf("cases[%d]: token type wrong, want=%q, got=%q", i, tt.wantType, token.Type)
+		tok := l.NextToken()
+		if tok.Type != tt.wantType {
+			t.Fatalf("cases[%d]: token type wrong, want=%q, got=%q", i, tt.wantType, tok.Type)
 		}
-		if token.Literal != tt.wantLiteral {
-			t.Fatalf("cases[%d]: token literal wrong, want=%q, got=%q", i, tt.wantLiteral, token.Literal)
+		if tok.Literal != tt.wantLiteral {
+			t.Fatalf("cases[%d]: token literal wrong, want=%q, got=%q", i, tt.wantLiteral, tok.Literal)
 		}
 	}
 }
