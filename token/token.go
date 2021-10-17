@@ -14,14 +14,17 @@ const (
 
 	// 演算子
 	ASSIGN   = "="
+	BANG     = "!"
 	PLUS     = "+"
 	MINUS    = "-"
-	BANG     = "!"
 	ASTERISK = "*"
 	SLASH    = "/"
 
 	LT = "<"
 	GT = ">"
+
+	EQ = "=="
+	NOT_EQ = "!="
 
 	// デリミタ
 	COMMA     = ","
