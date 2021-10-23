@@ -43,6 +43,59 @@ func TestLetStatements(t *testing.T) {
 	}
 }
 
+func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
+	if s.TokenLiteral() != "let" {
+		t.Errorf("s.TokenLiteral does not 'let' got=%q", s.TokenLiteral())
+		return false
+	}
+	letS, ok := s.(*ast.LetStatement)
+	if !ok {
+		t.Errorf("s does not *ast.LetStatement got=%q", s)
+		return false
+	}
+	if letS.Name.Value != name {
+		t.Errorf("LetStatement.Name.Value does not '%s' got=%s", name, letS.Name.Value)
+		return false
+	}
+	if letS.Name.TokenLiteral() != name {
+		t.Errorf("LetStatement.Name.TokenLiteral() does not '%s' got=%s", name, letS.Name.TokenLiteral())
+		return false
+	}
+	return true
+}
+
+func TestReturnStatements(t *testing.T) {
+	in := `
+	return 5;
+	return 10;
+	return 898989;
+	`
+
+	l := lexer.New(in)
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+	if program == nil {
+		t.Fatalf("ParseProgram() returned nil")
+	}
+	if len(program.Statements) != 3 {
+		t.Fatalf("program.Statements does not contain 3 statements. got=%d", len(program.Statements))
+	}
+
+	for _, s := range program.Statements {
+		returnS, ok := s.(*ast.ReturnStatement)
+		if !ok {
+			t.Fatalf("s does not *ast.ReturnStatement. got=%q", s)
+			continue
+		}
+		if returnS.TokenLiteral() != "return" {
+			t.Fatalf("returnS.TokenLiteral() does not 'return'. got=%s", returnS.TokenLiteral())
+			continue
+		}
+	}
+}
+
 func checkParserErrors(t *testing.T, p *parser.Parser) {
 	errors := p.Errors()
 	if len(errors) == 0 {
@@ -53,25 +106,4 @@ func checkParserErrors(t *testing.T, p *parser.Parser) {
 		t.Errorf("parser error: %q", msg)
 	}
 	t.FailNow()
-}
-
-func testLetStatement(t *testing.T, s ast.Statement, name string) bool {
-	if s.TokenLiteral() != "let" {
-		t.Errorf("s.TokenLiteral is not 'let' got=%q", s.TokenLiteral())
-		return false
-	}
-	letS, ok := s.(*ast.LetStatement)
-	if !ok {
-		t.Errorf("s is not *ast.LetStatement got=%q", s)
-		return false
-	}
-	if letS.Name.Value != name {
-		t.Errorf("LetStatement.Name.Value is not '%s' got=%s", name, letS.Name.Value)
-		return false
-	}
-	if letS.Name.TokenLiteral() != name {
-		t.Errorf("LetStatement.Name.TokenLiteral() is not '%s' got=%s", name, letS.Name.TokenLiteral())
-		return false
-	}
-	return true
 }
