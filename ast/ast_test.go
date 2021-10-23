@@ -12,19 +12,19 @@ func TestString(t *testing.T) {
 		Statements: []ast.Statement{
 			&ast.LetStatement{
 				Token: token.Token{
-					Type: token.LET,
+					Type:    token.LET,
 					Literal: "let",
 				},
 				Name: &ast.Identifier{
 					Token: token.Token{
-						Type: token.IDENT,
+						Type:    token.IDENT,
 						Literal: "x",
 					},
 					Value: "x",
 				},
 				Value: &ast.Identifier{
 					Token: token.Token{
-						Type: token.IDENT,
+						Type:    token.IDENT,
 						Literal: "y",
 					},
 					Value: "y",
