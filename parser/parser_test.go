@@ -1,6 +1,7 @@
 package parser_test
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/kiki-ki/go-monkey/ast"
@@ -145,6 +146,59 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	if literal.TokenLiteral() != "5" {
 		t.Fatalf("literal.Value is not %q. got=%q", "5", literal.TokenLiteral())
 	}
+}
+
+func TestParsingPrefixExpressions(t *testing.T) {
+	cases := []struct {
+		input        string
+		operator     string
+		integerValue int64
+	}{
+		{"!5;", "!", 5},
+		{"-5;", "-", 5},
+	}
+
+	for _, tt := range cases {
+		l := lexer.New(tt.input)
+		p := parser.New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
+		}
+		s, ok := program.Statements[0].(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
+		}
+		exp, ok := s.Expression.(*ast.PrefixExpression)
+		if !ok {
+			t.Fatalf("s.Expression is not ast.PrefixExpression. got=%T", s.Expression)
+		}
+		if exp.Operator != tt.operator {
+			t.Fatalf("exp.Operator is not %q. got=%q", tt.operator, exp.Operator)
+		}
+		if !testIntegerLiteral(t, exp.Right, tt.integerValue) {
+			return
+		}
+	}
+}
+
+func testIntegerLiteral(t *testing.T, il ast.Expression, wantVal int64) bool {
+	i, ok := il.(*ast.IntegerLiteral)
+	if !ok {
+		t.Errorf("il is not *ast.IntegerLiteral. got=%T", il)
+		return false
+	}
+	if i.Value != wantVal {
+		t.Errorf("i.Value is not %d. got=%d", wantVal, i.Value)
+		return false
+	}
+	if i.TokenLiteral() != strconv.Itoa(int(wantVal)) {
+		t.Errorf("i.TokenLiteral is not %q. got=%q", strconv.Itoa(int(wantVal)), i.TokenLiteral())
+		return false
+	}
+	return true
 }
 
 func checkParserErrors(t *testing.T, p *parser.Parser) {
