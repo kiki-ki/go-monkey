@@ -1,6 +1,8 @@
 package parser
 
 import (
+	"fmt"
+
 	"github.com/kiki-ki/go-monkey/ast"
 	"github.com/kiki-ki/go-monkey/lexer"
 	"github.com/kiki-ki/go-monkey/token"
@@ -11,15 +13,29 @@ type Parser struct {
 
 	curToken  token.Token
 	peekToken token.Token
+
+	errors []string
 }
 
 func New(l *lexer.Lexer) *Parser {
-	p := &Parser{l: l}
+	p := &Parser{
+		l:      l,
+		errors: make([]string, 0),
+	}
 
 	// cur, peekがセットされてる状態まで進めておく
 	p.nextToken()
 	p.nextToken()
 	return p
+}
+
+func (p *Parser) Errors() []string {
+	return p.errors
+}
+
+func (p *Parser) peekError(t token.TokenType) {
+	msg := fmt.Sprintf("expected next token type to be %s, but got %s", t, p.peekToken.Type)
+	p.errors = append(p.errors, msg)
 }
 
 func (p *Parser) nextToken() {
@@ -80,6 +96,7 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 		p.nextToken() // ここで進める
 		return true
 	} else {
+		p.peekError(t)
 		return false
 	}
 }
