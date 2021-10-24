@@ -148,6 +148,37 @@ func TestIntegerLiteralExpression(t *testing.T) {
 	}
 }
 
+func TestBooleanExpression(t *testing.T) {
+	cases := []struct {
+		input    string
+		wantBool bool
+	}{
+		{"true;", true},
+		{"false;", false},
+	}
+	for _, tt := range cases {
+		l := lexer.New(tt.input)
+		p := parser.New(l)
+		program := p.ParseProgram()
+		checkParserErrors(t, p)
+
+		if len(program.Statements) != 1 {
+			t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
+		}
+		s, ok := program.Statements[0].(*ast.ExpressionStatement)
+		if !ok {
+			t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
+		}
+		b, ok := s.Expression.(*ast.Boolean)
+		if !ok {
+			t.Fatalf("s.Expression is not ast.Boolean. got=%T", s.Expression)
+		}
+		if b.Value != tt.wantBool {
+			t.Fatalf("b.Value is not %t. got=%t", tt.wantBool, b.Value)
+		}
+	}
+}
+
 func TestParsingPrefixExpressions(t *testing.T) {
 	cases := []struct {
 		input        string
