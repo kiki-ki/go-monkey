@@ -230,7 +230,7 @@ func TestParsingInfixExpressions(t *testing.T) {
 	}
 }
 
-func TestOperatorPrecedenceExpressions(t *testing.T) {
+func TestOperatorPrecedenceParsing(t *testing.T) {
 	cases := []struct {
 		input string
 		want string
