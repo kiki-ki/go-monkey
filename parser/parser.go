@@ -207,8 +207,8 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 
 func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	exp := &ast.InfixExpression{
-		Token: p.curToken,
-		Left: left,
+		Token:    p.curToken,
+		Left:     left,
 		Operator: p.curToken.Literal,
 	}
 	precedence := p.curPrecedence()
