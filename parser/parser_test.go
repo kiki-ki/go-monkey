@@ -261,6 +261,44 @@ func TestIfElseExpression(t *testing.T) {
 	}
 }
 
+func TestFunctionLiteralParsing(t *testing.T) {
+	input := `fn(x, y) { x + y; }`
+
+	l := lexer.New(input)
+	p := parser.New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program has not enough statements. got=%d", len(program.Statements))
+	}
+	s, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("program.Statements[0] is not ast.ExpressionStatement. got=%T", program.Statements[0])
+	}
+	fl, ok := s.Expression.(*ast.FunctionLiteral)
+	if !ok {
+		t.Fatalf("s.Expression is not ast.FunctionLiteral. got=%T", s.Expression)
+	}
+	if len(fl.Parameters) != 2 {
+		t.Fatalf("parameters length is wrong. got=%d", len(fl.Parameters))
+	}
+	if !testLiteralExpression(t, fl.Parameters[0], "x") {
+		return
+	}
+	if !testLiteralExpression(t, fl.Parameters[1], "y") {
+		return
+	}
+	if len(fl.Body.Statements) != 1 {
+		t.Fatalf("Body.Statements length is wrong. got=%d", len(fl.Body.Statements))
+	}
+	body, ok := fl.Body.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("Statements[0] is not ast.ExpressionStatement. got=%T", fl.Body.Statements[0])
+	}
+	testInfixExpression(t, body.Expression, "x", "+", "y")
+}
+
 func TestParsingPrefixExpressions(t *testing.T) {
 	cases := []struct {
 		input    string
