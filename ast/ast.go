@@ -243,9 +243,9 @@ func (ie *IfExpression) String() string {
 }
 
 type FunctionLiteral struct {
-	Token       token.Token // fn
-	Parameters  []*Identifier
-	Body *BlockStatement
+	Token      token.Token // fn
+	Parameters []*Identifier
+	Body       *BlockStatement
 }
 
 func (fl *FunctionLiteral) expressionNode() {}
