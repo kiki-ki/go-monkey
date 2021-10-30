@@ -443,6 +443,42 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 	}
 }
 
+func TestCallExpressionParsing(t *testing.T) {
+	input := "add(1, 2 * 3, 4 + 5);"
+
+	l := lexer.New(input)
+	p := parser.New(l)
+	program := p.ParseProgram()
+	checkParserErrors(t, p)
+
+	if len(program.Statements) != 1 {
+		t.Fatalf("program.Statements does not contain %d statements. got=%d", 1, len(program.Statements))
+	}
+	s, ok := program.Statements[0].(*ast.ExpressionStatement)
+	if !ok {
+		t.Fatalf("s is not  ast.ExpressionStatement. got=%T", program.Statements[0])
+	}
+	exp, ok := s.Expression.(*ast.CallExpression)
+	if !ok {
+		t.Fatalf("exp is not  ast.CallExpression. got=%T", s.Expression)
+	}
+	if !testIdentifier(t, exp, "add") {
+		return
+	}
+	if len(exp.Arguments) != 3 {
+		t.Fatalf("wrong length of arguments. got=%d", len(exp.Arguments))
+	}
+	if !testLiteralExpression(t, exp.Arguments[1], 1) {
+		return
+	}
+	if !testInfixExpression(t, exp.Arguments[2], 2, "*", 3) {
+		return
+	}
+	if !testInfixExpression(t, exp.Arguments[3], 4, "+", 5) {
+		return
+	}
+}
+
 func testIntegerLiteral(t *testing.T, il ast.Expression, wantVal int64) bool {
 	i, ok := il.(*ast.IntegerLiteral)
 	if !ok {
