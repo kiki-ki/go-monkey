@@ -290,7 +290,7 @@ func (ce *CallExpression) String() string {
 	out.WriteString(ce.Function.TokenLiteral())
 	out.WriteString("(")
 	out.WriteString(strings.Join(args, ", "))
-	out.WriteString(") ")
+	out.WriteString(")")
 
 	return out.String()
 }

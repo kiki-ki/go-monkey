@@ -428,6 +428,9 @@ func TestOperatorPrecedenceParsing(t *testing.T) {
 		{"2 / (5 + 5)", "(2 / (5 + 5))"},
 		{"-(5 + 5)", "(-(5 + 5))"},
 		{"!(true == true)", "(!(true == true))"},
+		{"a + add(b * c) + d", "((a + add((b * c))) + d)"},
+		{"add(a, b, 1, 2 * 3, 4 + 5, add(6, 7 * 8))", "add(a, b, 1, (2 * 3), (4 + 5), add(6, (7 * 8)))"},
+		{"add(a + b + c * d / e + f)", "add((((a + b) + ((c * d) / e)) + f))"},
 	}
 
 	for _, tt := range cases {
@@ -462,19 +465,19 @@ func TestCallExpressionParsing(t *testing.T) {
 	if !ok {
 		t.Fatalf("exp is not  ast.CallExpression. got=%T", s.Expression)
 	}
-	if !testIdentifier(t, exp, "add") {
+	if !testIdentifier(t, exp.Function, "add") {
 		return
 	}
 	if len(exp.Arguments) != 3 {
 		t.Fatalf("wrong length of arguments. got=%d", len(exp.Arguments))
 	}
-	if !testLiteralExpression(t, exp.Arguments[1], 1) {
+	if !testLiteralExpression(t, exp.Arguments[0], 1) {
 		return
 	}
-	if !testInfixExpression(t, exp.Arguments[2], 2, "*", 3) {
+	if !testInfixExpression(t, exp.Arguments[1], 2, "*", 3) {
 		return
 	}
-	if !testInfixExpression(t, exp.Arguments[3], 4, "+", 5) {
+	if !testInfixExpression(t, exp.Arguments[2], 4, "+", 5) {
 		return
 	}
 }
