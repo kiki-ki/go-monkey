@@ -13,7 +13,9 @@ func main() {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Printf("Hello %s! This is the kiki-ki's Monkey programing language!\n", u.Name)
-	fmt.Print("Feel free to type in commands.\n")
+	fmt.Printf("Konitiwa %s! This is kiki-ki's Monkey programing language!\n\n", u.Name)
+	fmt.Println("Usage:")
+	fmt.Printf("\tHelp: 'h' or 'help'\n")
+	fmt.Printf("\tEscape: 'q' or 'exit'\n\n")
 	repl.Start(os.Stdin, os.Stdout)
 }
