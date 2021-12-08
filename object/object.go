@@ -23,7 +23,7 @@ func (i *Integer) Inspect() string {
 	return fmt.Sprintf("%d", i.Value)
 }
 
-func (i *Integer) Type() string {
+func (i *Integer) Type() ObjectType {
 	return INTEGER_OBJ
 }
 
@@ -35,7 +35,7 @@ func (b *Boolean) Inspect() string {
 	return fmt.Sprintf("%t", b.Value)
 }
 
-func (i *Boolean) Type() string {
+func (i *Boolean) Type() ObjectType {
 	return BOOLEAN_OBJ
 }
 
@@ -45,6 +45,6 @@ func (n *Null) Inspect() string {
 	return "null"
 }
 
-func (n *Null) Type() string {
+func (n *Null) Type() ObjectType {
 	return NULL_OBJ
 }

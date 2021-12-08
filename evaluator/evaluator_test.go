@@ -3,6 +3,7 @@ package evaluator_test
 import (
 	"testing"
 
+	"github.com/kiki-ki/go-monkey/evaluator"
 	"github.com/kiki-ki/go-monkey/lexer"
 	"github.com/kiki-ki/go-monkey/object"
 	"github.com/kiki-ki/go-monkey/parser"
